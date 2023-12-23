@@ -1,0 +1,10 @@
+.userImg {
+    height: 50px;
+    width : 50px;
+}
+
+.review {
+    margin: 10px;
+    height: 400px;
+    overflow-y: scroll;
+}

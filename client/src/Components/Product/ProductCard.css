@@ -1,0 +1,14 @@
+.card {
+    height: 350px;
+    width: 275px;
+    margin-right: 5px;
+}
+.itemPic {
+    height: 200px;
+    width: 275px;
+}
+.header {
+    height: 105px;
+    width: 275px;
+    overflow-y: hidden;
+}
