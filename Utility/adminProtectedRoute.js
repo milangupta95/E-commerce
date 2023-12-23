@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
-const key = require('../secrets').privateKey;
+require('dotenv').config();
+const key = process.env.privateKey;
 module.exports.adminprotectedRoute = function(req,res,next) {
     let token = req.cookies.login;
     const payload = jwt.verify(token,key);
