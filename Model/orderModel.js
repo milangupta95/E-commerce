@@ -20,6 +20,14 @@ const orderSchema = new mongoose.Schema({
             min: [1,"Quantity can't be less than 1"]
         }
     }],
+    address: {
+        type: String,
+        required: true
+    },
+    phone: {
+        type: String,
+        required: true
+    },
     dateBought: {
         type: Date,
         default: Date.now()

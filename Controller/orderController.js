@@ -1,35 +1,38 @@
 const orderModel = require("../Model/orderModel");
 
-module.exports.makeOrder = async function(req,res) {
+module.exports.makeOrder = async function (req, res) {
+    console.log("Make Order Called");
     try {
         const user_id = req.user_id;
-        const {items} = req.body;
+        const { items, address, phone } = req.body;
         const order = await orderModel.create({
             userId: user_id,
-            items: items
+            items: items,
+            address: address,
+            phone: phone
         });
         order.user_id = undefined;
-        if(order) {
+        if (order) {
             res.status(201).json({
                 message: "Order Placed SuccesFully",
                 data: order
             })
-        }else {
+        } else {
             res.status(401).json({
                 message: "This Order Can't Be Placed"
             });
         }
-    } catch(err) {
+    } catch (err) {
         res.status(501).json({
             message: "We can't Process This time"
         });
     }
 }
 
-module.exports.getAllOrders = async function(req,res) {
-    try{
+module.exports.getAllOrders = async function (req, res) {
+    try {
         const orders = await orderModel.find();
-        if(orders) {
+        if (orders) {
             res.status(201).json({
                 message: "Fetched Data SuccesFully",
                 data: orders
@@ -39,19 +42,26 @@ module.exports.getAllOrders = async function(req,res) {
                 message: "Sorry The Page you are requesting is Not Found"
             });
         }
-    }catch(err) {
+    } catch (err) {
         res.status(501).json({
             message: "There is Some Error"
         })
     }
 }
 
-module.exports.getCustomerOrder = async function(req,res) {
-    try{
+module.exports.getCustomerOrder = async function (req, res) {
+    try {
         const user_id = req.user_id;
-        const orders = await orderModel.find({userId:user_id});
-        if(orders) {
-            res.status(201).json({
+        const orders = await orderModel.find({ userId: user_id })
+            .populate({
+                path: 'items',
+                populate: {
+                    path: 'productId',
+                    model: 'product'
+                }
+            });
+        if (orders) {
+            res.status(200).json({
                 message: "Orders found SucessFully",
                 data: orders
             });
@@ -60,18 +70,19 @@ module.exports.getCustomerOrder = async function(req,res) {
                 message: "No Data Found"
             });
         }
-    } catch(err) {
+    } catch (err) {
+        console.log(err.message);
         res.status(501).json({
             message: err.message
         })
     }
 }
 
-module.exports.getOneOrder = async function(req,res) {
+module.exports.getOneOrder = async function (req, res) {
     try {
         const orderId = req.params.id;
         const order = await orderModel.findById(orderId);
-        if(order) {
+        if (order) {
             res.status(201).json({
                 message: "Data is Found",
                 data: order
@@ -81,7 +92,7 @@ module.exports.getOneOrder = async function(req,res) {
                 message: "Data is Not Found"
             });
         }
-    } catch(err) {
+    } catch (err) {
         res.status(501).json({
             message: err.message
         });

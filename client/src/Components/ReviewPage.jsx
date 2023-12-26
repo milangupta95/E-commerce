@@ -2,6 +2,7 @@ import React from 'react'
 import { useState } from 'react';
 import api from '../utility';
 import { useSelector } from 'react-redux';
+import {Rating} from '@mui/material'
 import _ from 'lodash'
 function ReviewPage(props) {
     const review = props.review;
@@ -38,33 +39,21 @@ function ReviewPage(props) {
     }
 
     return (
-        <div class=" max-w-sm w-full lg:max-w-full lg:flex">
-            <div class="border-b ml-28 p-2 border-gray-400 lg:border-gray-400 bg-white rounded-b lg:rounded-b-none lg:rounded-r flex flex-col">
+        <div class="w-[full]">
+            <div class="border-b border-gray-400 lg:border-gray-400 bg-white rounded-b lg:rounded-b-none lg:rounded-r flex flex-col">
                 <div class="">
                     <div class="flex">
                         <img class="w-10 h-10 rounded-full mr-2" src={review.userId.profilePic} alt="Avatar of Jonathan Reinink" />
                         <div class="text-sm">
                             <p class="text-gray-900 leading-none mb-2">{review.userId.name}</p>
-                            <span class="flex items-center">
-                                {
-                                    _.times(Math.ceil(review.ratingGiven), (i) => {
-                                        return <svg fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 text-red-500" viewBox="0 0 24 24">
-                                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
-                                        </svg>
-                                    })
-                                }
-                                {
-                                    _.times(Math.floor(5 - review.ratingGiven), (i) => {
-                                        return <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 text-red-500" viewBox="0 0 24 24">
-                                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
-                                        </svg>
-                                    })
-                                }
-                            </span>
+                            <Rating name="half-rating-read" defaultValue={review.ratingGiven} precision={0.5} readOnly />
                         </div>
                     </div>
-                    <div className='flex mt-3'>
-                        <p class="text-gray-700 text-base mr-10">{review.comment}</p>
+                    <div className='flex items-center justify-between mt-3'>
+                        <div>
+                            <p class="text-gray-700 text-base mr-10">{review.comment}</p>
+                        </div>
+                        
                         {
                             user._id === review.userId._id ? <div className='justify-self-end'>
                                 <button onClick={editReview}><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">

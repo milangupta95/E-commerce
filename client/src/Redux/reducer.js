@@ -50,16 +50,18 @@ const cartIntialState = loginToken ? {
 }
 const cartReducer = (state = cartIntialState,action) => {
     switch(action.type) {
-        case actionTypes.GET_CART_SUCCESS:
+        case actionTypes.GET_CART_SUCCESS: {
             return {
                 ...state,
                 cart : action.cart
             }
-        case actionTypes.GET_CART_FAIL: 
+        }
+        case actionTypes.GET_CART_FAIL: {
             return {
                 ...state,
                 cart: []
             }
+        }
         case actionTypes.ADD_TO_CART_SUCCESS: {
             return {
                 ...state,

@@ -1,9 +1,9 @@
 const cartModel = require("../Model/cartModel");
-const { deleteProduct } = require("./productController");
 
 module.exports.addToCart = async function (req, res) {
     try {
         let user_id = req.user_id;
+        console.log(user_id);
         let product_id = req.params.id;
         let { quantity,pname,productPic,price} = req.body;
         let cartproduct = await cartModel.create({
@@ -14,7 +14,7 @@ module.exports.addToCart = async function (req, res) {
             productPic: productPic,
             price:price
         });
-        cartproduct.userId = undefined;
+        // cartproduct.userId = undefined;
         if (cartproduct) {
             res.status(201).json({
                 message: "SuccessFully Added To Cart",
@@ -26,6 +26,7 @@ module.exports.addToCart = async function (req, res) {
             })
         }
     } catch (err) {
+        console.log(err.message);
         res.status(501).json({
             message: err.message
         })
@@ -36,16 +37,19 @@ module.exports.getAllCartProduct = async function (req, res) {
     try {
         let cartProducts = await cartModel.find();
         if (cartProducts) {
-            res.status(201).json({
+            res.status(200).json({
                 message: "Product Found SuccessFully",
                 data: cartProducts
             })
+            console.log(cartProducts);
         } else {
+            console.log(cartProducts);
             res.status(404).json({
                 message: "No Data Found"
             })
         }
     } catch (err) {
+        console.log(err.message);
         res.status(501).json({
             message: err.message
         })
@@ -57,16 +61,19 @@ module.exports.getAllCustomerProductCart = async function (req, res) {
         const user_id = req.user_id;
         const cartProducts = await cartModel.find({ userId: user_id });
         if (cartProducts) {
-            res.status(201).json({
+            res.status(200).json({
                 message: "Cart Products Fetched SuccessFully",
                 data: cartProducts
             });
+            console.log(cartProducts);
         } else {
+            console.log("Not Found");
             res.status(404).json({
                 message: "Data Not Found"
             });
         }
     } catch (err) {
+        console.log(err.message);
         res.status(501).json({
             message: err.message
         })
@@ -78,7 +85,7 @@ module.exports.getOneCartProduct = async function (req, res) {
         const cartId = req.params.id;
         const cartProduct = await cartModel.findById(cartId);
         if (cartProduct) {
-            res.status(201).json({
+            res.status(200).json({
                 message: "Found",
                 data: cartProduct
             })
@@ -104,7 +111,7 @@ module.exports.updateCart = async function (req, res) {
                 cartProduct[key] = DataToBeUpdated[key];
             }
             await cartProduct.save();
-            res.json({
+            res.status(201).json({
                 message: "Cart Updated SuccesFully"
             })
         } else {

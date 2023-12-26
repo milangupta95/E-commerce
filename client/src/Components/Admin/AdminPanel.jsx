@@ -33,7 +33,7 @@ function AdminPanel() {
   return (
     <>
       {(!isAdmin || isAdmin !== 'admin') ? <div>You Have No Access to this page</div>
-        : <div>
+        : <div className='p-4'>
           <button className='p-2 rounded bg-green-500	mt-20 cursor-pointer' onClick={() => setAddFormState(!addFormState)}>Add a Product</button>
           <div className={addFormState ? "" : "hidden"}>
             <ProductAdder />

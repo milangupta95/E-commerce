@@ -3,6 +3,8 @@ import React from 'react'
 import { useEffect, useState } from 'react'
 import ProductCard from './Product/ProductCard';
 import Pagination from './Product/Pagination'
+import { BulletList } from 'react-content-loader'
+
 function Home() {
     const [products, setProducts] = useState('');
     const [loading, setLoading] = useState(true);
@@ -50,9 +52,9 @@ function Home() {
     return (
         <div className='mt-16'>
             {
-                (loading === true || products === '') ? <div>Loading...</div> :
+                (loading === true || products === '') ? <div className='p-4 w-[full]'><BulletList/></div> :
                     <>
-                        <div className='flex flex-wrap h-fit bg-gray-100 items-center justify-center'>
+                        <div className='flex flex-wrap h-fit bg-gray-100 items-center justify-center p-4 gap-y-4 gap-x-8'>
                             {
                                 products.slice((currPage - 1) * 10, currPage * 10).map((product) => {
                                     return (

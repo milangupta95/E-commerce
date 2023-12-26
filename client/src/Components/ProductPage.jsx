@@ -8,18 +8,49 @@ import _ from 'lodash'
 import './ProductDesign.css'
 import { addToCart } from '../Redux/actionHandlers';
 import ReviewPage from './ReviewPage';
+import { Button, Modal, TextField, Rating } from '@mui/material';
+import { List } from 'react-content-loader'
+
 function ProductPage() {
     const [loading, setLoading] = useState(true);
     const [product, setProduct] = useState('');
     const [reviews, setReviews] = useState('');
+    const [open, setOpen] = useState(false);
+    const [rating, setRating] = useState(0);
     const [review, setReview] = useState('');
-    const [rating, setRating] = useState(1);
-    
+    let imageProps = {};
+    if (!loading) {
+        imageProps = {
+            width: 300,
+            height: 340,
+            zoomPosition: "right",
+            zoomWidth: 800,
+            img: product.itemPicture
+        };
+    }
+
+
+    const handleOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const handleRatingChange = (event, newValue) => {
+        setRating(newValue);
+    };
+
+    const handleReviewChange = (event) => {
+        setReview(event.target.value);
+    };
+
     const params = useParams();
     const dispatch = useDispatch();
     const isLoggedIn = useSelector(state => state.login.isLoggedIn);
     const cart = useSelector(state => state.cart.cart);
-    
+
     useEffect(() => {
         setLoading(true);
         async function getData() {
@@ -52,6 +83,7 @@ function ProductPage() {
         }).catch(err => {
             window.alert(err.message);
         })
+        handleClose();
     }
     const addProductToCart = () => {
         const pid = params.id;
@@ -72,74 +104,77 @@ function ProductPage() {
         }
     }
 
+
     return (
         loading ?
-            <div>Loading...</div> :
-            <div>
+            <List/> :
+            <div className="mx-auto w-[100%]">
                 <div className='mt-16'>
-                    <section class="text-gray-700 body-font overflow-hidden bg-white">
-                        <div class="container px-5 py-6 mx-auto">
-                            <div class="lg:w-4/5 mx-5 flex flex-wrap">
-                                <img alt="ecommerce" class="lg:w-1/2 w-full object-cover object-center rounded border border-gray-200" src={product.itemPicture} />
-                                <div class="lg:w-1/2 w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0">
-                                    <h1 class="text-gray-900 text-3xl title-font font-medium mb-1">{product.productName}</h1>
-                                    <div class="flex mb-4">
-                                        <span className='p-0.5 bg-slate-300'>{loading === true || product === '' ? 0 : product.rating.toFixed(1)}</span>
-                                        <span class="flex items-center">
-                                            {
-                                                _.times(Math.ceil(product.rating), (i) => {
-                                                    return <svg fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 text-red-500" viewBox="0 0 24 24">
-                                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
-                                                    </svg>
-                                                })
-                                            }
-                                            {
-                                                _.times(Math.floor(5 - product.rating), (i) => {
-                                                    return <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 text-red-500" viewBox="0 0 24 24">
-                                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
-                                                    </svg>
-                                                })
-                                            }
-                                            <span class="text-gray-600 ml-3">{product.numRating} Reviews</span>
-                                        </span>
-                                    </div>
-                                    <p class="leading-relaxed">{product.description}</p>
-                                    <div class="flex">
-                                        <span class="title-font font-medium text-2xl text-gray-900">Rs {product.price}</span>
-                                        <button class="flex ml-auto text-white bg-red-500 border-0 py-2 px-6 focus:outline-none hover:bg-red-600 rounded" onClick={addProductToCart}>Add To Cart</button>
-                                    </div>
+                    <section className="text-gray-700 body-font overflow-hidden bg-white">
+                        <div className="w-[full] flex flex-col md:flex-row items-center justify-center px-5 py-6 mx-auto">
+                            <div className='md:w-[40%] w-[100%]'>
+                                <img src = {product.itemPicture} className='w-[350px] h-[400px]'/>
+                            </div>
+                            <div className='md:w-[30%] w-[100%]'>
+                                <h1 className="text-gray-900 text-3xl title-font font-medium mb-4">{product.productName} - Rs. {product.price}</h1>
+                                <div className="flex items-center mb-4">
+                                    <span className='p-1 bg-slate-300 rounded'>{loading === true || product === '' ? 0 : product.rating.toFixed(1)}</span>
+                                    <Rating defaultValue={product.rating} precision={0.5} readOnly />
+                                    <span className="flex items-center ml-3 text-gray-600">
+                                        <span className="ml-2">{product.numRating} Reviews</span>
+                                    </span>
+                                </div>
+                                <p className="leading-relaxed mb-4">{product.description}</p>
+                                <div className="flex items-center justify-between">
+                                    <Button variant="outlined" color="primary" onClick={handleOpen}>
+                                        Add a Review
+                                    </Button>
+                                    <button className="flex ml-auto text-white bg-red-500 border-0 py-2 px-6 focus:outline-none hover:bg-red-600 rounded" onClick={addProductToCart}>Add To Cart</button>
                                 </div>
                             </div>
                         </div>
                     </section>
                 </div>
-                <div className='mx-28 mb-2 border-2 rounded-xs p-2'>
-                    <div className='text-2xl text-center'><h1 >Add a Review</h1></div>
-                    <br />
-                    <form className='w-full'>
-                        <label for='rating' className='pr-5'>Rating</label>
-                        <input value={rating} onChange={ratingChanger} type='number' min='1' max='5' className='border-2 p-2' />
-                        <label for="message" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your message</label>
-                        <textarea value={review} onChange={reviewChanger} id="message" rows="4" class="p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Leave a comment..."></textarea>
-                        <button onClick={addReview} className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mt-2 rounded'>Add Review</button>
-                    </form>
-                </div>
-                <>
-                    {reviews === '' ? <div>Loading...</div> :
-                        <div className='review w-full'>
-                            {
-                                reviews.map((review) => {
-                                    return (
-                                        <ReviewPage review = {review}></ReviewPage>
-                                    )
-                                })
-                            }
+                <Modal open={open} onClose={handleClose} aria-labelledby="modal-title" aria-describedby="modal-description">
+                    <div className='w-[100%] sm:w-[40%] p-4 mt-[20%] bg-white rounded-lg mx-auto'>
+                        <div className='flex items-center justify-between'>
+                            <div className='text-2xl'>
+                                Add a Review - {product.productName}
+                            </div>
+                        </div>
+
+                        <TextField
+                            label="Your message"
+                            multiline
+                            rows={4}
+                            value={review}
+                            onChange={handleReviewChange}
+                            fullWidth
+                            variant="outlined"
+                            margin="normal"
+                        />
+                        <div className='item-center justify-between flex'>
+                            <Rating size='large' name="rating" value={rating} onChange={handleRatingChange} />
+                            <Button onClick={addReview} variant="contained" color="primary" disableElevation>
+                                Add Review
+                            </Button>
+                        </div>
+
+                    </div>
+                </Modal>
+                <div className='w-full flex items-center justify-center'>
+                    {loading ? <div>Loading...</div> :
+                    reviews.length === 0 ? <div className='text-center w-[full] text-red-500'> No Reviews To Show </div> :
+                        <div className='overflow-y-scroll rounded-lg shadow-sm max-h-[400px] md:w-[65%] w-[100%] p-4'>
+                            {reviews.map((review) => (
+                                <ReviewPage key={review.id} review={review}></ReviewPage>
+                            ))}
                         </div>
                     }
-                </>
-
+                </div>
             </div>
     )
+
 }
 
 export default ProductPage

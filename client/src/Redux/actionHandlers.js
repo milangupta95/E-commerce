@@ -42,37 +42,42 @@ export const loginHandler = (email, password) => {
 }
 
 export const cartGetterHandler = () => {
-    return function(dispatch) {
-        api.get('cart/getAllCustomerProductCart').then(res => {
-            dispatch({
-                type: 'GET_CART_SUCCESS',
-                cart: res.data.data
-            });
-        }).catch(err => {
-            dispatch({
-                type: 'GET_CART_FAIL',
-                cart: {}
-            })
-        })
+    return async function(dispatch) {
+        console.log("Call Made");
+        let res = await api.get('cart/getAllCustomerProductCart');
+        if(res) {
+            if(res.status === 200) {
+                dispatch({
+                    type: 'GET_CART_SUCCESS',
+                    cart: res.data.data
+                });
+            } else {
+                dispatch({
+                    type: 'GET_CART_FAIL',
+                    cart: {}
+                })
+            }
+        }
     }
 }
 
 export const addToCart = (quantity,pname,productpic,id,price) => {
     return function(dispatch) {
-        api.post(`cart/addToCart/${id}`,{
+        api.post(`/cart/addToCart/${id}`,{
             quantity: quantity,
             pname: pname,
             productPic: productpic,
             price: price
         }).then(res => {
             let cartProducts = localStorage.getItem('cart');
-            cartProducts = (cartProducts === []) ? [JSON.parse(res.data.data)] : [...cartProducts,JSON.parse(res.data.data)];
+            cartProducts = (cartProducts.length === 0) ? [JSON.parse(res.data.data)] : [...cartProducts,JSON.parse(res.data.data)];
             localStorage.setItem('cart',cartProducts);
             dispatch({
                 type : 'ADD_TO_CART_SUCCESS',
                 data : res.data.data
             });
         }).catch(err => {
+            console.log(err.message);
             dispatch({
                 type : 'ADD_TO_CART_FAILED',
                 data : {}
@@ -116,6 +121,7 @@ export const quantityIncrease = (pid,quan) => {
         api.patch(`cart/updateCart/${pid}`,{
             quantity: quan + 1
         }).then(res => {
+
             dispatch({
                 type: 'QUANTITY_INCREASE_SUCCESS',
                 pid: pid

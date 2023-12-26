@@ -5,7 +5,7 @@ module.exports.protectedRoute = function(req,res,next) {
     let token = req.cookies.login;
     const payload = jwt.verify(token,key);
     if(payload) {
-        const user_id = payload.data.id;
+        const user_id = payload.data._id;
         req.user_id = user_id;
         next();
     } else {

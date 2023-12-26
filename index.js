@@ -1,15 +1,14 @@
 const express = require('express');
-const secret_key = "sk_test_51N05z8SIxFF90szGLoDH1bTMJUaXMVXpefWVG3bET3bVVs5MnY3F0Kq1M3NMH1YsQtzBw4ZbZJhz2uFNW2R25eii00NxqnjVd6";
-const stripe = require('stripe')(secret_key);
+const Razorpay = require("razorpay");
 const path = require("path");
 // const uuid = require('uuid/v4');
 const app = express();
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
-// app.use(cors({
-//     credentials: true,
-//     origin: "http://localhost:3001",
-// }));
+app.use(cors({
+    credentials: true,
+    origin: "http://localhost:3001",
+}));
 app.use(express.json());
 app.use(cookieParser());
 const authRouter = require('./Routes/authRoutes');
@@ -35,18 +34,15 @@ app.get("*", function (_, res) {
     );
 });
 app.post('/payment', (req, res) => {
-    const { product, token } = req.body;
-    // const idempotencyKey = uuid();
-    return stripe.customers.create({
-        email: token.email,
-        source: token.id
-    }).then((customer) => {
-        stripe.charges.create({
-            ammount: product.price * 100,
-            currency: "INR",
-            customer: customer.id,
+    const { product } = req.body;
+    var instance = new Razorpay({ key_id: 'rzp_test_YFhp3t3OiGpFIz', key_secret: '8cViV9jEq3nMrrbdwZQeDAhr' })
+    instance.orders.create({
+        amount: product.price * 100,
+        currency: "INR",
+        receipt: "xyzID",
+        notes: {
             description: "This is Payment"
-        });
+        }
     }).then((result) => {
         console.log("Payment Success");
         res.status(200).json(result);
@@ -55,6 +51,12 @@ app.post('/payment', (req, res) => {
         res.status(401).json(err);
     })
 });
+
+app.get("/payment/success",(req,res) => {
+    res.status(200).json(() => {
+        message: "Payment Done Successfully"
+    })
+})
 app.post('/sendFeedback', (req, res) => {
     try {
         const { email, message, subject } = req.body;
