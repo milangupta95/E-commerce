@@ -98,3 +98,35 @@ module.exports.getOneOrder = async function (req, res) {
         });
     }
 }
+
+module.exports.markOrderShipped = async function(req,res) {
+    try {
+        console.log("API Hit");
+        const orderId = req.params.id;
+        const order = await orderModel.findById(orderId);
+        if (order) {
+            if(order.status === 'bought') {
+                order.status = 'dispatched';
+                let savedOrder = await order.save();
+                console.log(savedOrder);
+                res.status(200).json({
+                    message: "Dispatched",
+                    data: savedOrder
+                });
+            } else {
+                res.status(200).json({
+                    message: "Already Dispatched",
+                    data: order
+                });
+            } 
+        } else {
+            res.status(404).json({
+                message: "Data is Not Found"
+            });
+        }
+    } catch(err) {
+        res.status(501).json({
+            message: err.message
+        })
+    }
+}

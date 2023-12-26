@@ -119,7 +119,7 @@ function ProductPage() {
                                 <h1 className="text-gray-900 text-3xl title-font font-medium mb-4">{product.productName} - Rs. {product.price}</h1>
                                 <div className="flex items-center mb-4">
                                     <span className='p-1 bg-slate-300 rounded'>{loading === true || product === '' ? 0 : product.rating.toFixed(1)}</span>
-                                    <Rating defaultValue={product.rating} precision={0.5} readOnly />
+                                    <Rating value={product.rating} precision={0.5} readOnly />
                                     <span className="flex items-center ml-3 text-gray-600">
                                         <span className="ml-2">{product.numRating} Reviews</span>
                                     </span>

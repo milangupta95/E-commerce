@@ -32,7 +32,7 @@ async function displayRazorpay(product, orders,phone,address) {
     return;
   }
 
-  const result = await axios.post("http://localhost:3000/payment", { product: product });
+  const result = await api.post("/payment", { product: product });
 
   if (!result) {
     alert("Server error. Are you online?");
@@ -55,7 +55,7 @@ async function displayRazorpay(product, orders,phone,address) {
         razorpayOrderId: response.razorpay_order_id,
         razorpaySignature: response.razorpay_signature,
       };
-      const result = await axios.get("http://localhost:3000/payment/success");
+      const result = await api.get("/payment/success");
       let makeOrderRes = await api.post('/order/makeOrder', {
         items: orders,
         phone: phone,

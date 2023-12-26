@@ -1,9 +1,11 @@
 const express = require('express');
 const { protectedRoute } = require('../Utility/protectedRoute');
-const { makeOrder, getAllOrders, getCustomerOrder, getOneOrder } = require('../Controller/orderController');
+const { makeOrder, getAllOrders, getCustomerOrder, getOneOrder, markOrderShipped } = require('../Controller/orderController');
+const { adminprotectedRoute } = require('../Utility/adminProtectedRoute');
 const orderRouter = express.Router();
 orderRouter.post('/makeOrder',protectedRoute,makeOrder);
-orderRouter.get('/getAllOrders',getAllOrders);
+orderRouter.get('/getAllOrders',adminprotectedRoute,getAllOrders);
 orderRouter.get('/getCustomerOrder',protectedRoute,getCustomerOrder);
 orderRouter.get('/getOneOrder/:id',getOneOrder);
+orderRouter.patch('/markdis/:id',markOrderShipped);
 module.exports = orderRouter;

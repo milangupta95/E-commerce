@@ -7,11 +7,8 @@ function OrderBox({product}) {
       <div className='h-fit'>
         <div className='flex md:flex-row flex-col items-center justify-between h-[30%] border-b'>
           <div>
-            <p>Order Id: <span className='font-bold'>{product._id}</span></p>
-            <p>Date: <span className='font-bold'>{() => {
-              let d = new Date(product.dateBought);
-              return <span>d</span>;
-            }}</span></p>
+            <p>Order Id: <span className='font-bold'>{product._id} - <span className='text-green-600'>{product.status}</span></span></p>
+            <p>Date: <span className='font-bold'>{product.dateBought.substring(0,product.dateBought.indexOf('T'))}</span></p>
           </div>
 
           <div className='md:space-x-2'>
